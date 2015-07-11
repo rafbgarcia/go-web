@@ -1,0 +1,32 @@
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+.c-input {
+  border: 1px solid transparent;
+  padding: 5px 10px;
+  resize: none;
+  width: 100%;
+}
+
+.c-input:hover, .c-input:focus {
+  border: 1px solid #ddd;
+}
+
+.posts {
+  margin-top: 50px;
+}
+
+.posts .title {
+  font-size: 24px;
+}
+
+.posts .btn {
+  visibility: hidden;
+}
+
+.posts li:hover .btn {
+  visibility: visible;
+}
+

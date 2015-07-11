@@ -6,28 +6,41 @@
   <link rel="stylesheet" href="/assets/style.css">
 
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular.min.js"></script>
+
   <script>
-  angular.module("goWeb", [])
-  .controller("Index", function($http, $scope) {
-    $http.get("http://localhost:3000/posts").success(function(data) {
-      $scope.posts = data;
-    });
+  var HOST = "http://localhost:3000";
 
-    $scope.createPost = function (post) {
-      $http.post("http://localhost:3000/posts", post).success(function (data) {
-        $scope.posts.push(data);
+  if (document.domain.indexOf('appspot.com') != -1) {
+    HOST = "//go-api-rafa.appspot.com";
+  }
+
+  function postsUrl (postId) {
+    return HOST + "/posts" + (postId ? "/" + postId : "");
+  }
+  </script>
+
+  <script>
+    angular.module("goWeb", [])
+    .controller("Index", function($http, $scope) {
+      $http.get(postsUrl()).success(function(data) {
+        $scope.posts = data;
       });
-    };
 
-    $scope.editPost = function (post) {
-      $http.put("http://localhost:3000/posts/" + post.id, post);
-    };
+      $scope.createPost = function (post) {
+        $http.post(postsUrl(), post).success(function (data) {
+          $scope.posts.push(data);
+        });
+      };
 
-    $scope.deletePost = function (post, i) {
-      $http.delete("http://localhost:3000/posts/" + post.id);
-      $scope.posts.splice(i, 1)
-    };
-  });
+      $scope.editPost = function (post) {
+        $http.put(postsUrl(post.id), post);
+      };
+
+      $scope.deletePost = function (post, i) {
+        $http.delete(postsUrl(post.id));
+        $scope.posts.splice(i, 1)
+      };
+    });
   </script>
 </head>
 <body>
@@ -70,7 +83,7 @@
     </div>
 
     <div class="col-sm-8 col-sm-offset-0 posts">
-      <p ng-if="posts.length == 0" class="text-muted">Ainda não tem Post, cria aí o primeiro! :)</p>
+      <p ng-if="!posts" class="text-muted">Ainda não tem Post, cria aí o primeiro! :)</p>
       <ul>
         <li ng-repeat="p in posts track by $index">
           <form ng-submit="editPost(p)">
